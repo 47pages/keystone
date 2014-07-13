@@ -8,7 +8,7 @@
 			.file-details
 				if hasFile
 					.file-values
-						a(href=field.href(item), target='_blank').field-value
+						div.field-value
 							if field.hasFormatter()
 								!=field.format(item)
 							else
