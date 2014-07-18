@@ -1,3 +1,41 @@
+## 47Pages Fork
+
+The 47Pages fork of KeystoneJS is necessary for two reasons:
+*	Keystone is still in a stage of relatively unstable development
+*	The 47Pages site requires additional functionality tailored to its unique needs
+
+That being said, it is important that localized changes be kept in sync with the upstream Keystone repository, as development there is continuously improving. We want to be able to pull down those changes into our forked branch, while maintaining stability on our production release and retaining the custom changes made for 47Pages.
+
+### Branching model
+Clone **keystone-47pages** locally and set the upstream origin:
+
+    git clone git@github.com:mattdahl/keystone-47pages.git
+    git remote add upstream git@github.com:JedWatson/keystone.git
+    
+To develop, checkout the latest development branch (e.g. **47pages-0617-4f48821**). The first number is the month and date of the branch's creation, to allow for easy chronological sorting. The second number is the SHA1 hash of the latest upstream commit that this branch has been rebased against. Add commits to this branch as you make changes.
+
+When you are ready to merge into the production branch, you must first rebase against the upstream fork! This is to ensure that our changes do not diverge too much from the official repository. Rebase often to avoid merge conflicts. We want a copy of the latest upstream changes locally, too, so...
+
+    git checkout master
+    git pull upstream master
+    git checkout 47pages-date-sha1
+    git rebase master
+    
+Resolve any conflicts. Check that everything is working okay with the changes pulled in from upstream. Note that 47pages-related changes *only* ever happen in branches prefixed with **47pages** - our **master** should always be pristine.
+
+Then, simply merge the changes into production.
+
+    git checkout 47pages-prod
+    git merge 47pages-date-sha1
+    
+Finally, create the new development branch for future changes. Old development branches can stay around to rollback to if something breaks, but no new development should take place in them.
+
+    git checkout master
+    git rev-parse --short HEAD
+    git checkout 47pages-prod
+    git checkout -b 47pages-newdate-newsha1
+
+
 ![KeystoneJS](http://keystonejs.com/images/logo.svg)
 ===================================
 
