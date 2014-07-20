@@ -1,6 +1,7 @@
 var keystone = require('../../'),
 	_ = require('underscore'),
-	async = require('async');
+	async = require('async'),
+	auth = require('../api/auth');
 
 exports = module.exports = function(req, res) {
 
@@ -160,6 +161,32 @@ exports = module.exports = function(req, res) {
 					return rel.items.results.length;
 				});
 
+				var hiddenUiElements = [],
+					canEditModel = false;
+
+				// Perform authentication on the model before rendering it
+				for (var i = req.list.uiElements.length - 1; i >= 0; i--) {
+					var field = req.list.uiElements[i].field;
+
+					// Do not render any elements that the user isn't authenticated to view
+					if (!auth.canViewField(field, req.user)) {
+						hiddenUiElements.push(req.list.uiElements[i]);
+						req.list.uiElements.splice(i, 1);
+					}
+					// Modify each field's noedit property on-the-fly based on what each user is authenticated to edit
+					else {
+						field.options.pristineNoedit = field.options.noedit;
+						field.options.noedit = field.options.pristineNoedit || !auth.canEditField(field, req.user);
+
+						if (!field.options.noedit) {
+							canEditModel = true;
+						}
+					}
+				}
+
+				req.list.options.pristineNoedit = req.list.options.noedit;
+				req.list.options.noedit = !canEditModel;
+
 				keystone.render(req, res, 'item', _.extend(viewLocals, {
 					section: keystone.nav.by.list[req.list.key] || {},
 					title: 'Keystone: ' + req.list.singular + ': ' + req.list.getDocumentName(item),
@@ -170,6 +197,18 @@ exports = module.exports = function(req, res) {
 					showRelationships: showRelationships,
 					drilldown: drilldown
 				}));
+
+				// Restore the default noedit properties on the fields for the next request
+				req.list.uiElements.forEach(function (element, index) {
+					element.field.options.noedit = element.field.options.pristineNoedit;
+				});
+
+				// Restore the default noedit property on the model for the next request
+				req.list.options.noedit = req.list.options.pristineNoedit;
+
+				// Restore the hidden ui elements for the next request
+				// TODO: Less hacky way of reappending these... the order gets messed up
+				req.list.uiElements = req.list.uiElements.concat(hiddenUiElements);
 
 			});
 
