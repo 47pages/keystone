@@ -23,6 +23,7 @@ exports = module.exports = {
 			case 'Title':
 			case 'Status':
 			case 'Staff Meeting Assignment':
+			case 'Volume Assignment':
 			case 'Publish Online':
 				return user.isSeniorDesign || user.isSeniorLiterature || user.permissionLevel > this.permissionLevels.senior;
 			case 'Edited Piece':
@@ -36,6 +37,7 @@ exports = module.exports = {
 			case 'Title':
 			case 'Status':
 			case 'Staff Meeting Assignment':
+			case 'Volume Assignment':
 			case 'Publish Online':
 				return user.isSeniorDesign || user.isSeniorArt || user.permissionLevel > this.permissionLevels.senior;
 			case 'Edited Image':
