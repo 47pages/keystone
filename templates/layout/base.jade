@@ -41,7 +41,8 @@ html
 							li: a(href=signout).signout Sign Out
 					ul.nav.navbar-nav
 						each navSection in nav.sections
-							li(class=section.key == navSection.key ? 'active' : null): a(href='/keystone/' + navSection.lists[0].path)= navSection.label
+							if auth.canViewModel(navSection.lists[0], user)
+								li(class=section.key == navSection.key ? 'active' : null): a(href='/keystone/' + navSection.lists[0].path)= navSection.label
 			if section.lists && section.lists.length > 1
 				nav(role='navigation')#section-nav.navbar.navbar-default.navbar-static-top: .container
 					.navbar-header

@@ -93,6 +93,14 @@ exports = module.exports = {
 		default:
 			return true;
 		}
+	},
+	canViewModel: function (model, user) {
+		switch (model.key) {
+		case 'User':
+			return user.isEditor || user.permissionLevel > this.permissionLevels.editor;
+		default:
+			return true;
+		}
 	}
 };
 

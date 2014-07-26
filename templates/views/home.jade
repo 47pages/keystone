@@ -12,10 +12,11 @@ block content
 					h3: a(href='/keystone/' + list.path)= list.label
 		else
 			each navSection in nav.sections
-				.nav-section
-					h4= navSection.label
-					ul: each list in navSection.lists
-						li: a(href='/keystone/' + list.path)= list.label
+				if auth.canViewModel(navSection.lists[0], user)
+					.nav-section
+						h4= navSection.label
+						ul: each list in navSection.lists
+							li: a(href='/keystone/' + list.path)= list.label
 			if orphanedLists.length
 				.nav-section
 					h4 Other

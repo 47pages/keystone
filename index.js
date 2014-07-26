@@ -10,7 +10,8 @@ var fs = require('fs'),
 	numeral = require('numeral'),
 	cloudinary = require('cloudinary'),
 	mandrillapi = require('mandrill-api'),
-	utils = require('keystone-utils');
+	utils = require('keystone-utils')
+	auth = require('./routes/api/auth');
 
 var templateCache = {};
 
@@ -297,7 +298,8 @@ Keystone.prototype.render = function(req, res, view, ext) {
 			enableImages: keystone.get('wysiwyg images') ? true : false,
 			enableCloudinaryUploads: keystone.get('wysiwyg cloudinary images') ? true : false,
 			additionalButtons: keystone.get('wysiwyg additional buttons') || ''
-		}
+		},
+		auth: auth
 	};
 
 	// optional extensions to the local scope

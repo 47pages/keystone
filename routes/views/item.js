@@ -166,21 +166,25 @@ exports = module.exports = function(req, res) {
 
 				// Perform authentication on the model before rendering it
 				for (var i = req.list.uiElements.length - 1; i >= 0; i--) {
+					if (req.list.uiElements[i].type !== 'field') {
+						continue;
+					}
+
 					var field = req.list.uiElements[i].field;
 
-					// Do not render any elements that the user isn't authenticated to view
-					if (!auth.canViewField(field, req.user)) {
-						hiddenUiElements.push(req.list.uiElements[i]);
-						req.list.uiElements.splice(i, 1);
-					}
 					// Modify each field's noedit property on-the-fly based on what each user is authenticated to edit
-					else {
+					if (auth.canViewField(field, req.user)) {
 						field.options.pristineNoedit = field.options.noedit;
 						field.options.noedit = field.options.pristineNoedit || !auth.canEditField(field, req.user);
 
 						if (!field.options.noedit) {
 							canEditModel = true;
 						}
+					}
+					// Do not render any elements that the user isn't authenticated to view
+					else {
+						hiddenUiElements.push(req.list.uiElements[i]);
+						req.list.uiElements.splice(i, 1);
 					}
 				}
 
@@ -200,6 +204,10 @@ exports = module.exports = function(req, res) {
 
 				// Restore the default noedit properties on the fields for the next request
 				req.list.uiElements.forEach(function (element, index) {
+					if (element.type !== 'field') {
+						return;
+					}
+
 					element.field.options.noedit = element.field.options.pristineNoedit;
 				});
 
