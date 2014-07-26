@@ -14,19 +14,19 @@ Clone **keystone-47pages** locally and set the upstream origin:
     
 To develop, checkout the latest development branch (e.g. **47pages-0617-4f48821**). The first number is the month and date of the branch's creation, to allow for easy chronological sorting. The second number is the SHA1 hash of the latest upstream commit that this branch has been rebased against. Add commits to this branch as you make changes.
 
-When you are ready to merge into the production branch, you must first rebase against the upstream fork! This is to ensure that our changes do not diverge too much from the official repository. Rebase often to avoid merge conflicts. We want a copy of the latest upstream changes locally, too, so...
+When you are ready to merge into the production branch, you must first rebase it against the upstream fork! This is to ensure that our changes do not diverge too much from the official repository.
 
     git checkout master
     git pull upstream master
-    git checkout 47pages-date-sha1
-    git rebase master
+    git checkout 47pages-prod
+    git merge master
     
 Resolve any conflicts. Check that everything is working okay with the changes pulled in from upstream. Note that 47pages-related changes *only* ever happen in branches prefixed with **47pages** - our **master** should always be pristine.
 
 Then, simply merge the changes into production.
 
-    git checkout 47pages-prod
     git merge 47pages-date-sha1
+    git push origin 47pages-prod
     
 Finally, create the new development branch for future changes. Old development branches can stay around to rollback to if something breaks, but no new development should take place in them.
 
