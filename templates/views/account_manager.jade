@@ -1,0 +1,28 @@
+extends ../layout/base
+
+block js
+	script(src='/keystone/js/views/item.js')
+
+block intro
+	.page-header
+		h1 Your Account
+
+block content
+	form(method='post', action=user.list.path + '/' + user.id, enctype='multipart/form-data').item-details.account-information
+
+		//- TODO: Make this more secure against faked POST requests
+		//- Not an immediate security issue since this is an internal 47Pages privilege in the first place (i.e. requires
+		//- a login and CSRF validation), and an attacker would still need to know the ID hash of the user whose information
+		//- he was trying to change
+		input(type='hidden', name='action', value='accountUpdate')
+		input(type='hidden', name=csrf_token_key, value=csrf_token_value)
+
+		each el in account.uiElements
+			if el.type == 'field'
+				!= el.field.render('form', user, fieldLocals)
+			else if el.type == 'heading'
+				h3.form-heading(data-field-depends-on=el.options.dependsOn)= el.heading
+
+		.toolbar.toolbar-fixed
+			button(type='submit').btn.btn-default.btn-save Save
+			a(href='/keystone/' + user.list.path + '/' + user.id, data-confirm='Are you sure you want to reset your changes?').btn.btn-link.btn-cancel reset changes

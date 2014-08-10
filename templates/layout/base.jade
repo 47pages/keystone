@@ -39,6 +39,9 @@ html
 						ul.nav.navbar-nav.navbar-right
 							li.divider
 							li: a(href=signout).signout Sign Out
+					ul.nav.navbar-nav.navbar-right
+						li.divider
+						li: a(href=account_manager).account Account
 					ul.nav.navbar-nav
 						each navSection in nav.sections
 							if auth.canViewModel(navSection.lists[0], user)

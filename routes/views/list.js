@@ -147,7 +147,8 @@ exports = module.exports = function(req, res) {
 
 	var item;
 	if (!auth.canViewModel(req.list, req.user)) {
-		return res.status(403).send('Error: 403. You do not have the permissionLevel to access this page.');
+		req.flash('error', 'Error: 403. You do not have the permissionLevel to access the page: "' + req.path + '".');
+		return res.redirect(403, '/keystone');
 	}
 	else if ('update' in req.query) {
 

@@ -222,8 +222,32 @@ exports = module.exports = function(req, res) {
 
 		};
 
-		if (req.method === 'POST' && req.body.action === 'updateItem' && !req.list.get('noedit')) {
+		if (req.method === 'POST' && req.body.action === 'accountUpdate') {
+			if (!keystone.security.csrf.validate(req)) {
+				req.flash('error', 'There was a problem with your request, please try again.');
+				return renderView();
+			}
 
+			item.getUpdateHandler(req).process(
+				req.body,
+				{
+					flashErrors: true,
+					logErrors: true
+				},
+				function (err) {
+					if (err) {
+						return renderView();
+					}
+					req.flash('success', 'Your changes have been saved.');
+					return res.redirect('/keystone/account_manager');
+				}
+			);
+		}
+		else if (!auth.canViewModel(req.list, req.user)) {
+			req.flash('error', 'Error: 403. You do not have the permissionLevel to access the page: "' + req.path + '".');
+			return res.redirect(403, '/keystone');
+		}
+		else if (req.method === 'POST' && req.body.action === 'updateItem' && !req.list.get('noedit')) {
 			if (!keystone.security.csrf.validate(req)) {
 				req.flash('error', 'There was a problem with your request, please try again.');
 				return renderView();
@@ -236,8 +260,6 @@ exports = module.exports = function(req, res) {
 				req.flash('success', 'Your changes have been saved.');
 				return res.redirect('/keystone/' + req.list.path + '/' + item.id);
 			});
-
-
 		} else {
 			renderView();
 		}
