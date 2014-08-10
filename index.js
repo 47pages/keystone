@@ -1,7 +1,5 @@
 var fs = require('fs'),
 	path = require('path'),
-	http = require('http'),
-	https = require('https'),
 	_ = require('underscore'),
 	express = require('express'),
 	async = require('async'),
@@ -9,13 +7,10 @@ var fs = require('fs'),
 	moment = require('moment'),
 	numeral = require('numeral'),
 	cloudinary = require('cloudinary'),
-	mandrillapi = require('mandrill-api'),
-	utils = require('keystone-utils')
+	utils = require('keystone-utils'),
 	auth = require('./routes/api/auth');
 
 var templateCache = {};
-
-var dashes = '\n------------------------------------------------\n';
 
 /**
  * Don't use process.cwd() as it breaks module encapsulation
@@ -172,7 +167,7 @@ keystone.Field.Types = require('./lib/fieldTypes');
 keystone.View = require('./lib/view');
 keystone.Email = require('./lib/email');
 
-var security = keystone.security = {
+keystone.security = {
 	csrf: require('./lib/security/csrf')
 };
 
@@ -297,7 +292,9 @@ Keystone.prototype.render = function(req, res, view, ext) {
 		wysiwygOptions: {
 			enableImages: keystone.get('wysiwyg images') ? true : false,
 			enableCloudinaryUploads: keystone.get('wysiwyg cloudinary images') ? true : false,
-			additionalButtons: keystone.get('wysiwyg additional buttons') || ''
+			additionalButtons: keystone.get('wysiwyg additional buttons') || '',
+			additionalPlugins: keystone.get('wysiwyg additional plugins') || '',
+			additionalOptions: keystone.get('wysiwyg additional options') || {}
 		},
 		auth: auth
 	};
