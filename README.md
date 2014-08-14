@@ -9,12 +9,12 @@ That being said, it is important that localized changes be kept in sync with the
 ### Branching model
 Clone **keystone-47pages** locally and set the upstream origin:
 
-    git clone git@github.com:mattdahl/keystone-47pages.git
+    git clone git@github.com:git@github.com:47pages/keystone.git
     git remote add upstream git@github.com:JedWatson/keystone.git
     
-To develop, checkout the latest development branch (e.g. **47pages-0617-4f48821**). The first number is the month and date of the branch's creation, to allow for easy chronological sorting. The second number is the SHA1 hash of the latest upstream commit that this branch has been rebased against. Add commits to this branch as you make changes.
+To develop, checkout the latest development branch (e.g. **47pages-0617-4f48821**). The first number is the month and date of the branch's creation, to allow for easy chronological sorting. The second number is the short SHA1 hash of the latest upstream commit that this branch has been rebased against. Add commits to this branch as you make changes.
 
-When you are ready to merge into the production branch, you must first rebase it against the upstream fork! This is to ensure that our changes do not diverge too much from the official repository.
+When you are ready to merge into the production branch, you must first rebase **47pages-prod** against the upstream fork! This is to ensure that our changes do not diverge too much from the official repository.
 
     git checkout master
     git pull upstream master
@@ -23,7 +23,7 @@ When you are ready to merge into the production branch, you must first rebase it
     
 Resolve any conflicts. Check that everything is working okay with the changes pulled in from upstream. Note that 47pages-related changes *only* ever happen in branches prefixed with **47pages** - our **master** should always be pristine.
 
-Then, simply merge the changes into production.
+Then, simply merge the changes in your development branch into production. There should be no conflicts at this point.
 
     git merge 47pages-date-sha1
     git push origin 47pages-prod
