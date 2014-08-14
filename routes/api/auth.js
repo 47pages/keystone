@@ -49,7 +49,7 @@ exports = module.exports = {
 		case 'Volume':
 			switch (field.label) {
 			case 'Number':
-				return user.isEditor || this.permissionLevels.editor;
+				return user.isEditor || user.permissionLevel > this.permissionLevels.editor;
 			default:
 				return true;
 			}
