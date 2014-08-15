@@ -161,6 +161,17 @@ exports = module.exports = function(req, res) {
 					return rel.items.results.length;
 				});
 
+				var relationshipsTitle = 'Relationships';
+
+				switch (req.list.model.modelName) {
+				case 'Volume':
+					relationshipsTitle = 'Pieces to Be Published';
+					break;
+				case 'Meeting':
+					relationshipsTitle = 'Pieces to Review';
+					break;
+				}
+
 				var hiddenUiElements = [],
 					canEditModel = false;
 
@@ -199,6 +210,7 @@ exports = module.exports = function(req, res) {
 					item: item,
 					relationships: relationships,
 					showRelationships: showRelationships,
+					relationshipsTitle: relationshipsTitle,
 					drilldown: drilldown
 				}));
 

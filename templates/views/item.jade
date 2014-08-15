@@ -117,7 +117,7 @@ block content
 				a(href='/keystone/' + list.path + '?delete=' + item.id + csrf_query, data-confirm='Are you sure you want to delete this ' + list.singular.toLowerCase() + '?').btn.btn-link.btn-cancel delete #{list.singular.toLowerCase()}
 
 	if showRelationships
-		h2.relationship-heading.form-heading Relationships
+		h2.relationship-heading.form-heading=relationshipsTitle
 			each rel in relationships
 				if rel.items.results.length
 					h3.form-heading.relationship-heading: a(href='/keystone/' + rel.list.path)= (rel.label) ? rel.label : rel.list.label

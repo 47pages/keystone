@@ -24,6 +24,9 @@ mixin column(list, col, item)
 		+column_html(utils.cropHTMLString(item.get(col.field.path), 200, '...', true))
 	else if col.type == 'localfile'
 		+column_link(item.get(col.path).filename, item.get(col.path).path.substring(1) + '/' + item.get(col.path).filename, false)
+	else if col.type == 'text'
+		//- This is super brittle; TODO: please refactor to not override all other text relationships
+		+column_link(item.get(col.path), '/keystone/' + list.path + '/' + item.id, false)
 	else
 		- var value = col.field ? col.field.format(item) : item.get(col.path)
 		if col.isName
