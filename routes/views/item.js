@@ -184,7 +184,10 @@ exports = module.exports = function(req, res) {
 					var field = req.list.uiElements[i].field;
 
 					// Modify each field's noedit property on-the-fly based on what each user is authenticated to edit
-					if (auth.canViewField(field, req.user)) {
+					if (
+						auth.canViewField(field, req.user) &&
+						!(!req.user.isAdmin && field.type === 'boolean' && field.path === 'isAdmin') // Protect granting of admin privs in User model
+					) {
 						field.options.pristineNoedit = field.options.noedit;
 						field.options.noedit = field.options.pristineNoedit || !auth.canEditField(field, req.user);
 

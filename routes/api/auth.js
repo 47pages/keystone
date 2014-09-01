@@ -55,6 +55,8 @@ exports = module.exports = {
 			}
 		case 'Meeting':
 			switch (field.label) {
+			case 'Date':
+				return user.isEditor || user.permissionLevel > this.permissionLevels.editor;
 			case 'Minutes':
 				return user.isSeniorDesign || user.isSeniorLiterature || user.isSeniorArt || user.permissionLevel > this.permissionLevels.senior;
 			default:
@@ -94,9 +96,30 @@ exports = module.exports = {
 			return true;
 		}
 	},
+	/**
+	 * Performs an authentication check to see if a user can see a model (used for hiding sensitive models like user data)
+	 * @param  {String} field
+	 * @param  {Object} user
+	 * @return {Boolean}
+	 */
 	canViewModel: function (model, user) {
 		switch (model.key) {
 		case 'User':
+			return user.isEditor || user.permissionLevel > this.permissionLevels.editor;
+		default:
+			return true;
+		}
+	},
+	/**
+	 * Performs an authentication check to see if a user can create a model
+	 * @param  {String} field
+	 * @param  {Object} user
+	 * @return {Boolean}
+	 */
+	canCreateModel: function (model, user) {
+		switch (model.key) {
+		case 'Volume':
+		case 'Meeting':
 			return user.isEditor || user.permissionLevel > this.permissionLevels.editor;
 		default:
 			return true;
