@@ -69,6 +69,10 @@ html
 
 		#footer: .container
 			p Powered by <a href="http://keystonejs.com" target="_blank">KeystoneJS</a> version #{version}. Forked and customized at <a href="https://github.com/47pages/keystone">https://github.com/47pages/keystone</a>.
+				if User && user
+					br
+					|  Signed in as
+					|   #[a(href='/keystone/account_manager')= User.getDocumentName(user)].
 
 		//- Common
 		script(src="/keystone/js/lib/underscore/underscore-1.5.1.min.js")

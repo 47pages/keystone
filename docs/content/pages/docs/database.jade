@@ -137,6 +137,7 @@ block content
 							li <code>from</code> <code class="data-type">String</code> - the field or path to generate the key from, can be a space-delimited list of fields
 							li <code>path</code> <code class="data-type">String</code> - the path to store the key at
 							li <code>unique</code> <code class="data-type">Boolean</code> - whether the key should be unique or not
+							li <code>fixed</code> <code class="data-type">Boolean</code> - the key should be kept if it exists and it's non-empty. Defaults to <code class="data-type">false</code>.
 						| <em>Autokey paths are automatically be indexed; you may also want to include them in compound indexes.</em>
 				tr
 					td <code>track</code> <code class="data-type">Boolean or Object</code>
@@ -465,6 +466,45 @@ block content
 				|     categories: { type: Types.Relationship, ref: 'PostCategory', many: true }
 				| });
 			
+			h5 Relationship Filters
+			
+			p You can filter a relationship field using the <code>filters</code> option.
+
+			p The <code>filters</code> option is an object of key/pair values, in which the keys correspond to the fields of the related model to be filtered, and the values will either be literals or field names in the current model, the value of which will be used to filter the relationship.
+
+			p In the example below, the <code>author</code> field will only allow selection of a <code>User</code> whose <code>group</code> field is equal to 'admin'.
+			
+			pre: code.language-javascript
+				| Post.add({
+				|     title: { type: String, required: true },
+				|     category: { type: Types.Select, options: 'user, editor, admin', default: 'user' },
+				|     author: { type: Types.Relationship, ref: 'User', filters: { group: 'admin' } }
+				| });
+			
+			p You can also filter by the value of another field on the model. You do this setting the value of the filter to the name of the field, prefixed by a colon (:). 
+
+			p In the example below, the <code>author</code> field will only allow selection of a <code>User</code> whose <code>group</code> field is equal to the value of the <code>category</code> field of the <code>Post</code> model.
+
+			pre: code.language-javascript
+				| Post.add({
+				|     title: { type: String, required: true },
+				|     category: { type: Types.Select, options: 'user, editor, admin', default: 'user' },
+				|     author: { type: Types.Relationship, ref: 'User', filters: { group: ':category' } }
+				| });
+
+			p Finally, you can also filter by the current model's <code>_id</code> field.
+			
+			p In the example below, the <code>bestPost</code> field will only allow selection of a <code>Post</code> whose <code>author</code> field is equal to the <code>_id</code> of the current document.
+
+			pre: code.language-javascript
+				| User.add({
+				|     name: { type: String, required: true },
+				|     group: { type: Types.Select, options: 'user, editor, admin', default: 'user' },
+				|     bestPost: { type: Types.Relationship, ref: 'Post', filters: { author: ':_id' } }
+				| });
+
+			p.note You can only set filters on one-many relationships (i.e. when the <code>many</code> option is NOT set to <code class="default-value">true</code>).
+			
 			h5 Populating related data in queries
 			
 			p You can populate related data for relationship fields thanks to <a href="http://mongoosejs.com/docs/populate.html" target="_blank">Mongoose's populate functionality</a>. To populate the author and category documents when loading a Post from the example above, you would do this:
@@ -583,6 +623,7 @@ block content
 				p <code>wysiwyg</code> <code class="data-type">Boolean</code> - whether to display a WYSIWYG editor in the Admin UI  - for customizations of the editor see the <a href="/docs/configuration/#options-ui">Admin UI Options</a>.
 				p <code>height</code> <code class="data-type">Number</code> - the height of the field (in pixels)
 			
+			p See the <a href="/docs/configuration#options-ui">Admin UI Options</a> for global configuration options that can be used to customise the WYSIWYG editor.
 			
 			a(name="fieldtypes-color")
 			h3 <code>Color</code>
@@ -835,6 +876,18 @@ block content
 			pre: code.language-javascript { type: Types.CloudinaryImage }
 			.options
 				
+				h5 Options
+				p <code>publicID</code> <code class="data-type">String</code> name of the field to be used as the Cloudinary image <code class="data-type">public_id</code>.
+				pre: code.language-javascript { type: Types.CloudinaryImage, publicID: 'slug' }
+				p <code>folder</code> <code class="data-type">String</code> specifies a custom folder/prefix for the Cloudinary image <code class="data-type">public_id</code> when <code class="default-value">cloudinary folders</code> is set to <code class="default-value">true</code>.
+				pre: code.language-javascript { type: Types.CloudinaryImage, folder: 'path/to/image' }
+				p <code>autoCleanup</code> <code class="data-type">Boolean</code> when <code class="default-value">true</code> changes Keystone's default behavior from <code class="default-value">remove</code> (which only removes the Cloudinary image from the database) to <code class="default-value">delete</code> (which removes the image from both the database and Cloudinary storage). Additionally, this option replaces an existing image (if one already exists) during upload.
+				pre: code.language-javascript { type: Types.CloudinaryImage, autoCleanup : true }
+				p <code>select</code> <code class="data-type">Boolean</code> when <code class="default-value">true</code> a select field is displayed with a list of images currently available in Cloudinary storage. Only images with IDs that begin with the <code>selectPrefix</code> will be displayed when the <code>selectPrefix</code> is specified. Otherwise, images with IDs that begin with the <code>folder</code> will be displayed. If neither <code>selectPrefix</code> nor <code>folder</code> are configured, then only images with IDs that begin with <code class="data-type">[{prefix}]/{list.path}/{field.path}/</code> will be displayed.
+				pre: code.language-javascript { type: Types.CloudinaryImage, select : true }
+				p <code>selectPrefix</code> <code class="data-type">String</code> specifies the the prefix of the images that will be available for selection when <code>select</code> option is <code class="default-value">true</code>.
+				pre: code.language-javascript { type: Types.CloudinaryImage, select: true, selectPrefix: 'path/to/images' }
+
 				h5 Schema
 				p <code>public_id</code> <code class="data-type">String</code>
 				p <code>version</code> <code class="data-type">Number</code>
@@ -875,6 +928,11 @@ block content
 			h4 <code class="data-type">Array</code> &mdash; Displayed as a series of images, and an upload field in the Admin UI
 			p Stores multiple images in a array as a nested <code class="data-type">Schema</code>, each of which expose the same methods as the <code class="data-type">cloudinaryimage</code> field.
 			pre: code.language-javascript { type: Types.CloudinaryImages }
+			.options
+				
+				h5 Options
+				p <code>folder</code> <code class="data-type">String</code> specifies a custom folder/prefix for the Cloudinary image <code class="data-type">public_id</code> when <code class="default-value">cloudinary folders</code> is set to <code class="default-value">true</code>.
+				pre: code.language-javascript { type: Types.CloudinaryImages, folder: 'path/to/image' }
 			//- TODO: Usage Examples
 			
 			
