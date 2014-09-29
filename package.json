@@ -1,6 +1,6 @@
 {
   "name": "47pages-keystone",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "47Pages fork of the Node.js CMS: Web Application Framework and Admin GUI / Content Management System built on Express.js and Mongoose",
   "main": "index.js",
   "repository": {
