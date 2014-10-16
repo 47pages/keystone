@@ -19,8 +19,8 @@ block content
 				form(method="post", novalidate).auth-form
 					input(type='hidden', name=csrf_token_key, value=csrf_token_value)
 					.form-group
-						label(for='email') Email
-						input(type='email', name='email', id='email', value=submitted.email).form-control
+						label(for='username') Username
+						input(type='username', name='username', id='username', value=submitted.username).form-control
 					.form-group
 						label(for='password') Password
 						input(type='password', name='password', id='password').form-control
@@ -33,6 +33,6 @@ block content
 block js
 	//- Only focus the field after the shake animation is complete
 	if messages && messages.error.length
-		script setTimeout(function() { try { document.getElementById('email').focus(); } catch(e) {}; }, 800);
+		script setTimeout(function() { try { document.getElementById('username').focus(); } catch(e) {}; }, 800);
 	else
-		script try { document.getElementById('email').focus(); } catch(e) {};
+		script try { document.getElementById('username').focus(); } catch(e) {};

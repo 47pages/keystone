@@ -18,9 +18,9 @@ exports = module.exports = function(req, res) {
 			req.flash('error', 'There was an error with your request, please try again.');
 			return renderView();
 		}
-		
-		if (!req.body.email || !req.body.password) {
-			req.flash('error', 'Please enter your email address and password.');
+
+		if (!req.body.username || !req.body.password) {
+			req.flash('error', 'Please enter your username address and password.');
 			return renderView();
 		}
 
@@ -39,7 +39,7 @@ exports = module.exports = function(req, res) {
 		};
 
 		var onFail = function() {
-			req.flash('error', 'Sorry, that email and password combo are not valid.');
+			req.flash('error', 'Sorry, that username and password combo are not valid.');
 			renderView();
 		};
 
